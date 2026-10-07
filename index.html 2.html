@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sprint Team Capacity Calculator</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .input-section {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .input-box {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 7px;
+        }
+
+        input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        button {
+            grid-column: span 2;
+            padding: 12px;
+            background: #222;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #444;
+        }
+
+        .results {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            background: #eef1f4;
+        }
+
+        .card h3 {
+            margin: 0 0 10px;
+            font-size: 16px;
+        }
+
+        .value {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background: #222;
+            color: white;
+        }
+
+        .section-title {
+            margin-top: 30px;
+            margin-bottom: 10px;
+        }
+
+        .formula {
+            background: #f1f1f1;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            line-height: 1.8;
+        }
+
+        .final-result {
+            margin-top: 25px;
+            padding: 20px;
+            background: #e8f5e9;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .final-result h2 {
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 700px) {
+            .input-section,
+            .results {
+                grid-template-columns: 1fr;
+            }
+
+            button {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Sprint Team Capacity Calculator</h1>
+    <p class="subtitle">
+        Assignment 43 - Calculate Team Capacity for a Sprint
+    </p>
+
+    <!-- INPUT SECTION -->
+    <div class="input-section">
+
+        <div class="input-box">
+            <label>Number of Team Members</label>
+            <input type="number" id="teamMembers" value="4">
+        </div>
+
+        <div class="input-box">
+            <label>Sprint Working Days</label>
+            <input type="number" id="workingDays" value="10">
+        </div>
+
+        <div class="input-box">
+            <label>Leave / Holiday (Person-Days)</label>
+            <input type="number" id="leaveDays" value="4">
+        </div>
+
+        <div class="input-box">
+            <label>Meeting Time (Person-Days)</label>
+            <input type="number" id="meetingDays" value="6">
+        </div>
+
+        <button onclick="calculateCapacity()">
+            Calculate Team Capacity
+        </button>
+
+    </div>
+
+    <!-- CAPACITY RESULTS -->
+    <h2 class="section-title">Capacity Results</h2>
+
+    <div class="results">
+
+        <div class="card">
+            <h3>Gross Capacity</h3>
+            <div class="value" id="grossCapacity">40</div>
+            <p>Person-Days</p>
+        </div>
+
+        <div class="card">
+            <h3>Capacity Reduction</h3>
+            <div class="value" id="capacityReduction">10</div>
+            <p>Person-Days</p>
+        </div>
+
+        <div class="card">
+            <h3>Net Capacity</h3>
+            <div class="value" id="netCapacity">30</div>
+            <p>Person-Days</p>
+        </div>
+
+    </div>
+
+    <!-- VELOCITY -->
+    <h2 class="section-title">Previous Sprint Velocity</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Sprint</th>
+                <th>Completed Story Points</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td>Sprint 1</td>
+                <td>22</td>
+            </tr>
+
+            <tr>
+                <td>Sprint 2</td>
+                <td>25</td>
+            </tr>
+
+            <tr>
+                <td>Sprint 3</td>
+                <td>24</td>
+            </tr>
+
+            <tr>
+                <td>Sprint 4</td>
+                <td>25</td>
+            </tr>
+
+            <tr>
+                <th>Average Velocity</th>
+                <th id="averageVelocity">24 Story Points</th>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- FORMULAS -->
+    <h2 class="section-title">Calculation Details</h2>
+
+    <div class="formula">
+
+        <strong>Gross Capacity</strong><br>
+        Team Members × Working Days<br>
+        4 × 10 = <strong>40 person-days</strong>
+
+        <br><br>
+
+        <strong>Net Capacity</strong><br>
+        Gross Capacity − Leave/Holidays − Meeting Time<br>
+        40 − 4 − 6 = <strong>30 person-days</strong>
+
+        <br><br>
+
+        <strong>Capacity Reduction</strong><br>
+        Gross Capacity − Net Capacity<br>
+        40 − 30 = <strong>10 person-days</strong>
+
+        <br><br>
+
+        <strong>Capacity Reduction Percentage</strong><br>
+        (10 ÷ 40) × 100 = <strong>25%</strong>
+
+        <br><br>
+
+        <strong>Average Velocity</strong><br>
+        (22 + 25 + 24 + 25) ÷ 4 = <strong>24 Story Points</strong>
+
+    </div>
+
+    <!-- FINAL RESULT -->
+    <div class="final-result">
+
+        <h2>Final Sprint Planning Result</h2>
+
+        <p>
+            <strong>Net Team Capacity:</strong>
+            <span id="finalCapacity">30</span> Person-Days
+        </p>
+
+        <p>
+            <strong>Forecast Velocity:</strong>
+            24 Story Points
+        </p>
+
+        <p>
+            <strong>Recommended Sprint Commitment:</strong>
+            24 Story Points
+        </p>
+
+    </div>
+
+</div>
+
+
+<script>
+
+function calculateCapacity() {
+
+    // Get input values
+    const teamMembers =
+        Number(document.getElementById("teamMembers").value);
+
+    const workingDays =
+        Number(document.getElementById("workingDays").value);
+
+    const leaveDays =
+        Number(document.getElementById("leaveDays").value);
+
+    const meetingDays =
+        Number(document.getElementById("meetingDays").value);
+
+
+    // Calculate gross capacity
+    const grossCapacity =
+        teamMembers * workingDays;
+
+
+    // Calculate net capacity
+    const netCapacity =
+        grossCapacity - leaveDays - meetingDays;
+
+
+    // Calculate total reduction
+    const reduction =
+        grossCapacity - netCapacity;
+
+
+    // Display results
+    document.getElementById("grossCapacity").textContent =
+        grossCapacity;
+
+    document.getElementById("capacityReduction").textContent =
+        reduction;
+
+    document.getElementById("netCapacity").textContent =
+        netCapacity;
+
+    document.getElementById("finalCapacity").textContent =
+        netCapacity;
+}
+
+</script>
+
+</body>
+</html>
